@@ -1,103 +1,87 @@
 #include <stdio.h>   // Untuk fungsi input/output seperti printf dan scanf
-#include <limits.h>  // Untuk INT_MAX dan INT_MIN
-#include <float.h>   // Untuk FLT_MAX dan -FLT_MAX
+#include <stdlib.h>  // Untuk fungsi umum, seperti EXIT_SUCCESS/EXIT_FAILURE
+#include <limits.h>  // Untuk INT_MAX dan INT_MIN (nilai maksimum/minimum integer)
+#include <float.h>   // Untuk DBL_MAX atau FLT_MAX (nilai maksimum float/double)
+#include <string.h>  // Disertakan sesuai permintaan, meskipun tidak digunakan secara langsung
 
-// Fungsi utama program
 int main() {
-    int n;          // Variabel untuk menyimpan jumlah bilangan yang akan dimasukkan
-    int num;        // Variabel sementara untuk menyimpan setiap bilangan yang diinput
-    int min_val;    // Variabel untuk menyimpan nilai terkecil
-    int max_val;    // Variabel untuk menyimpan nilai terbesar
-    int prev_num;   // Variabel untuk menyimpan bilangan sebelumnya untuk perhitungan rata-rata berturut-turut
-    float max_consecutive_avg; // Variabel untuk menyimpan rata-rata tertinggi (tetap dihitung, tapi tidak ditampilkan)
-    float min_consecutive_avg; // Variabel untuk menyimpan rata-rata terendah dari dua bilangan berturut-turut
-
-    // Inisialisasi min_val dengan nilai integer maksimum yang mungkin.
-    min_val = INT_MAX;
-    // Inisialisasi max_val dengan nilai integer minimum yang mungkin.
-    max_val = INT_MIN;
-
-    // Inisialisasi max_consecutive_avg dengan nilai float negatif terbesar,
-    // agar rata-rata pertama yang dihitung pasti akan lebih besar.
-    max_consecutive_avg = -FLT_MAX;
-
-    // Inisialisasi min_consecutive_avg dengan nilai float positif terbesar,
-    // agar rata-rata pertama yang dihitung pasti akan lebih kecil.
-    min_consecutive_avg = FLT_MAX;
-
-    // Membaca input pertama: jumlah bilangan (n)
-    printf("Masukkan jumlah bilangan (n): "); // Pesan panduan untuk pengguna
-    if (scanf("%d", &n) != 1 || n <= 0) { // Validasi dasar: memastikan input adalah angka dan positif
-        printf("Input jumlah bilangan tidak valid. Harap masukkan bilangan bulat positif.\n");
-        return 1; // Keluar dengan kode error
+    int n; // Variabel untuk menyimpan jumlah angka yang akan diinput selanjutnya
+    printf("Masukkan nilai n (antara -100 dan 100): ");
+    if (scanf("%d", &n) != 1) {
+        printf("Input tidak valid. Harap masukkan bilangan bulat untuk n.\n");
+        return EXIT_FAILURE; // Menghentikan program jika input n tidak valid
     }
 
+    // Validasi rentang n
+    if (n < -100 || n > 100) {
+        printf("Nilai n harus berada di antara -100 dan 100.\n");
+        return EXIT_FAILURE; // Menghentikan program jika n di luar rentang
+    }
+
+    // Jika n adalah 0 atau 1, beberapa perhitungan tidak dapat dilakukan dengan benar
+    // Misalnya, rata-rata berturut-turut memerlukan setidaknya 2 angka masukan setelah n
     if (n == 0) {
-        printf("Hasil:\n"); // Sesuai format output, bahkan jika tidak ada data
-        printf("Tidak ada bilangan untuk diproses.\n");
-        return 0;
+        printf("Tidak ada angka yang dimasukkan setelah n.\n");
+        printf("Keluaran:\n");
+        printf("Min: N/A\n");
+        printf("Max: N/A\n");
+        printf("Rata-rata terendah: N/A\n");
+        return EXIT_SUCCESS;
+    }
+    if (n == 1) {
+        int single_num;
+        printf("Masukkan 1 angka: ");
+        if (scanf("%d", &single_num) != 1) {
+            printf("Input tidak valid.\n");
+            return EXIT_FAILURE;
+        }
+        printf("Keluaran:\n");
+        printf("%d\n", single_num); // Nilai terkecil
+        printf("%d\n", single_num); // Nilai terbesar
+        printf("N/A\n"); // Rata-rata terendah tidak bisa dihitung
+        return EXIT_SUCCESS;
     }
 
-    // Membaca bilangan pertama secara terpisah untuk inisialisasi awal min_val, max_val, dan prev_num
-    printf("Masukkan %d bilangan, setiap bilangan pada baris baru:\n", n);
-    if (scanf("%d", &num) != 1) { // Validasi dasar: memastikan input adalah angka
-        printf("Input bilangan pertama tidak valid. Harap masukkan bilangan bulat.\n");
-        return 1; // Keluar dengan kode error
-    }
-    min_val = num;
-    max_val = num;
-    prev_num = num; // Bilangan pertama menjadi bilangan sebelumnya untuk iterasi berikutnya
 
-    // Loop mulai dari bilangan kedua (i=1) hingga bilangan terakhir
-    for (int i = 1; i < n; i++) {
-        // Membaca setiap bilangan.
-        if (scanf("%d", &num) != 1) { // Validasi dasar: memastikan input adalah angka
-            printf("Input bilangan ke-%d tidak valid. Harap masukkan bilangan bulat.\n", i + 1);
-            return 1; // Keluar dengan kode error
+    int min_val = INT_MAX; // Inisialisasi nilai minimum dengan nilai integer terbesar
+    int max_val = INT_MIN; // Inisialisasi nilai maksimum dengan nilai integer terkecil
+    float min_avg = FLT_MAX; // Inisialisasi rata-rata minimum dengan nilai float terbesar
+    int prev_num; // Untuk menyimpan angka sebelumnya
+
+    printf("Masukkan %d angka berikutnya:\n", n);
+
+    // Loop untuk membaca n angka berikutnya
+    for (int i = 0; i < n; i++) {
+        int current_num;
+        if (scanf("%d", &current_num) != 1) {
+            printf("Input tidak valid. Harap masukkan bilangan bulat.\n");
+            return EXIT_FAILURE; // Menghentikan program jika input bukan angka
         }
 
-        // Membandingkan dengan nilai terkecil yang sudah ditemukan
-        if (num < min_val) {
-            min_val = num;
+        // Memperbarui nilai minimum dan maksimum
+        if (current_num < min_val) {
+            min_val = current_num;
+        }
+        if (current_num > max_val) {
+            max_val = current_num;
         }
 
-        // Membandingkan dengan nilai terbesar yang sudah ditemukan
-        if (num > max_val) {
-            max_val = num;
+        // Untuk iterasi kedua dan seterusnya, hitung rata-rata dua angka berturut-turut
+        if (i > 0) {
+            float current_avg = (float)(prev_num + current_num) / 2.0;
+            if (current_avg < min_avg) {
+                min_avg = current_avg;
+            }
         }
 
-        // Hitung rata-rata pasangan berturut-turut (prev_num dan num)
-        // Casting (float) penting agar hasil pembagian menjadi desimal
-        float current_avg = (float)(prev_num + num) / 2.0f;
-
-        // Bandingkan dengan rata-rata tertinggi yang sudah ditemukan
-        // Perhitungan ini tetap dilakukan karena bagian dari logika dasar, meski outputnya tidak ditampilkan
-        if (current_avg > max_consecutive_avg) {
-            max_consecutive_avg = current_avg;
-        }
-
-        // Bandingkan dengan rata-rata terendah yang sudah ditemukan
-        if (current_avg < min_consecutive_avg) {
-            min_consecutive_avg = current_avg;
-        }
-
-        // Update prev_num untuk iterasi berikutnya
-        prev_num = num;
+        prev_num = current_num; // Simpan angka saat ini untuk iterasi berikutnya
     }
 
-    // Menampilkan hasil nilai terkecil, terbesar, dan rata-rata terendah
-    printf("Hasil:\n");
-    printf("%d\n", min_val);         // Menampilkan nilai terkecil
-    printf("%d\n", max_val);         // Menampilkan nilai terbesar
-    
-    // Menampilkan rata-rata terendah hanya jika ada minimal dua bilangan (untuk membentuk pasangan)
-    if (n >= 2) {
-        printf("%.2f\n", min_consecutive_avg); // Menampilkan rata-rata terendah dengan 2 digit presisi
-        // Baris berikut yang menampilkan max_consecutive_avg telah DIHAPUS sesuai permintaan Anda.
-        // printf("%.2f\n", max_consecutive_avg);
-    } else {
-        printf("N/A\n"); // Atau pesan lain jika tidak ada pasangan untuk rata-rata
-    }
+    // Menampilkan hasil sesuai format yang diminta
+    printf("Keluaran:\n");
+    printf("%d\n", min_val);
+    printf("%d\n", max_val);
+    printf("%.2f\n", min_avg); // Format ke dua digit desimal
 
-    return 0; // Menandakan program berakhir dengan sukses
+    return EXIT_SUCCESS; // Mengakhiri program dengan sukses
 }

@@ -1,46 +1,46 @@
-#include <stdio.h>   
-#include <limits.h>  
-
+#include <stdio.h> // Untuk fungsi input/output seperti printf dan scanf
+#include <stdlib.h> // Umumnya disertakan, meskipun mungkin tidak langsung digunakan untuk kasus ini
 
 int main() {
-    int n;          
-    int num;        
-    int min_val;    
-    int max_val;    
+    int n; // Variabel untuk menyimpan jumlah bilangan yang akan dimasukkan
+    int angka; // Variabel untuk menyimpan setiap bilangan yang dibaca
+    int min_val; // Variabel untuk menyimpan nilai terkecil
+    int max_val; // Variabel untuk menyimpan nilai terbesar
 
-    
-    min_val = INT_MAX;
+    // Langkah 1: Membaca bilangan bulat positif 'n' sebagai jumlah baris masukan berikutnya
+    // printf("Masukkan jumlah bilangan (n): "); // Pesan opsional untuk pengguna
+    scanf("%d", &n);
 
-   
-    max_val = INT_MIN;
-
-    
-    printf("Masukkan jumlah bilangan (n): "); 
-    if (scanf("%d", &n) != 1 || n <= 0) {
-        printf("Input jumlah bilangan tidak valid. Harap masukkan bilangan bulat positif.\n");
-        return 1; 
+    // Pastikan n setidaknya 1 untuk memproses input
+    if (n <= 0) {
+        printf("Jumlah bilangan harus positif.\n");
+        return 1; // Keluar dengan kode error
     }
 
-    
-    printf("Masukkan %d bilangan, setiap bilangan pada baris baru:\n", n);
-    for (int i = 0; i < n; i++) {
-        
-        if (scanf("%d", &num) != 1) {
-            printf("Input bilangan ke-%d tidak valid. Harap masukkan bilangan bulat.\n", i + 1);
-            return 1; 
+    // Langkah 2: Membaca bilangan pertama untuk inisialisasi min_val dan max_val
+    // printf("Masukkan bilangan ke-1: "); // Pesan opsional untuk pengguna
+    scanf("%d", &angka);
+    min_val = angka; // Inisialisasi nilai terkecil dengan bilangan pertama
+    max_val = angka; // Inisialisasi nilai terbesar dengan bilangan pertama
+
+    // Langkah 3: Melakukan perulangan untuk membaca sisa (n-1) bilangan
+    // dan memperbarui min_val serta max_val
+    for (int i = 1; i < n; i++) {
+        // printf("Masukkan bilangan ke-%d: ", i + 1); // Pesan opsional untuk pengguna
+        scanf("%d", &angka);
+
+        if (angka < min_val) {
+            min_val = angka; // Perbarui min_val jika ditemukan nilai yang lebih kecil
         }
 
-        
-        if (num < min_val) {
-            min_val = num;
-        }       
-        if (num > max_val) {
-            max_val = num;
+        if (angka > max_val) {
+            max_val = angka; // Perbarui max_val jika ditemukan nilai yang lebih besar
         }
-    }   
-    printf("Hasil:\n"); 
-    printf("%d\n", min_val); 
-    printf("%d\n", max_val); 
+    }
 
-    return 0; 
+    // Langkah 4: Menampilkan hasil nilai terkecil dan terbesar
+    printf("%d\n", min_val);
+    printf("%d\n", max_val);
+
+    return 0; // Mengembalikan 0 menandakan program berakhir dengan sukses
 }
